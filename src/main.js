@@ -11,6 +11,8 @@ const BASE_URL = "https://pixabay.com/api/";
 const API_KEY = '41701983-23ca5d5908e2c78927e8095f2';
 const ITEMS_PER_PAGE = 40;
 
+const lightbox = new SimpleLightbox(".gallery-item");
+
 const getDaseUrl = () => {
   const url = new URL(BASE_URL);
   url.searchParams.append("key", API_KEY);
