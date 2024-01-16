@@ -9,7 +9,14 @@
     <script type="module" crossorigin src="/goit-js-hw-12/commonHelpers.js"></script>
   </head>
   <body>
-   
+    <form id="form">
+      <input type="text" id="search-input" placeholder="Search for images">
+      <button type="submit" id="search-button">Search</button>
+    </form>
+
+    <ul class="gallery" id="gallery"></ul>
+    <button id="load-more" style="display: none;">Load more</button>
+    <div id="loader" style="display: none;">Loading...</div>
 
     
   </body>
