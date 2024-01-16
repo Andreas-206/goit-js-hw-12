@@ -2,6 +2,7 @@ import axios from "axios";
 
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import simpleLightbox from "simplelightbox";
 
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -32,3 +33,118 @@ const fetchImages = async (query, page = 1) => {
   }
 };
 
+const renderGallery = (images) => {
+  const galleryContainer = document.getElementById("gallery");
+
+  images.forEach((image) => {
+    const { webformatURL, largeImageURL, tags, likes, views, comments, downloads } = image;
+
+    galleryContainer.insertAdjacentHTML("beforeend", `
+    <li class="gallery-item">
+      <a href="${largeImageURL}">
+        <img src="${webformatURL}" alt="${tags}"/>
+      </a>
+      <div class="image-info">
+        <p>Likes: ${likes}</p>
+        <p>Views: ${views}</p>
+        <p>Comments: ${comments}</p>
+        <p>Downloads: ${downloads}</p>
+      </div>
+    </li>
+    `);
+  });
+};
+
+const showLoadingIndicator = () => {
+  document.getElementById("loader").style.display = "block";
+};
+
+const hideLoadingIndicator = () => {
+  document.getElementById("loader").style.display = "none";
+};
+
+const showMessage = (message, type = "info") => {
+  simpleLightbox.close();
+  simpleLightbox.reload();
+  simpleLightbox.refresh();
+  simpleLightbox.next();
+
+  iziToast[type]({
+    title: message,
+    position: "topCenter",
+  });
+};
+
+const handleSearcgFormSubmit = async (event) => {
+  event.preventDefault();
+  const searchInput = document.getElementById("search-input");
+  const query = searchInput.value.trim();
+
+  if (query.lenght < 3) {
+    showMessage("Please enter a search query with at least 3 characters", "warning");
+    return;
+  }
+
+  showLoadingIndicator();
+
+  try {
+    const images = await fetchImages(query);
+    hideLoadingIndicator();
+
+    if (images.lenght > 0) {
+      renderGallery(images);
+
+      document.getElementById("load-more").style.display = "block";
+    } else {
+      showMessage("Sorry, there are no images matching your search query. Please try again.", "error");
+    }
+  } catch (error) {
+    hideLoadingIndicator();
+    showMessage("Error fetching images. Please try again later.", "error");
+  }
+};
+
+const loadMoreImages = async () => {
+  const searchInput = document.getElementById("search-input");
+  const query = searchInput.value.trim();
+
+  if (query.lenght < 3) {
+    showMessage("Please enter a search query with at least 3 characters", "warning");
+    return;
+  }
+
+  showLoadingIndicator();
+
+  try {
+    const images = await fetchImages(query, currentPage);
+
+    hideLoadingIndicator();
+
+    if (images.lenght > 0) {
+      renderGallery(images);
+      currentPage++;
+
+      window.scrollBy(0, getCardHeight());
+    } else {
+      showMessage("No more images t load", "info");
+
+      document.getElementById("load-more").style.display = "none";
+    }
+  } catch (error) {
+    hideLoadingIndicator();
+    showMessage("Error fetching images. Please try again later.", "error");
+  }
+};
+
+const getCardHeight = () => {
+  const firstCard = document.querySelector(".gallery-item");
+  return firstCard ? firstCard.getBoundingClientRect().height : 0;
+};
+
+let currentPage = 1;
+
+const searchForm = document.getElementById("form");
+searchForm.addEventListener("submit", handleSearcgFormSubmit);
+
+const loadMoreButton = document.getElementById("load-more");
+loadMoreButton.addEventListener("click", loadMoreImages);
