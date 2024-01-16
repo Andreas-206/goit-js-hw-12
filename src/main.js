@@ -13,7 +13,7 @@ const ITEMS_PER_PAGE = 40;
 
 const lightbox = new SimpleLightbox(".gallery-item");
 
-const getDaseUrl = () => {
+const getBaseUrl = () => {
   const url = new URL(BASE_URL);
   url.searchParams.append("key", API_KEY);
   url.searchParams.append("image_type", "photo");
@@ -25,10 +25,13 @@ const getDaseUrl = () => {
 
 const fetchImages = async (query, page = 1) => {
   try {
-    const url = getDaseUrl();
+    const url = getBaseUrl();
     url.searchParams.append("q", query);
     url.searchParams.append("page", page);
     url.searchParams.append("per_rage", ITEMS_PER_PAGE);
+
+    const response = await axios.get(url.toString());
+    return response.data.hits;
   } catch (error) {
     console.error("Error fetching images:", error);
     throw error;
@@ -82,7 +85,7 @@ const handleSearcgFormSubmit = async (event) => {
   const searchInput = document.getElementById("search-input");
   const query = searchInput.value.trim();
 
-  if (query.lenght < 3) {
+  if (query.length < 3) {
     showMessage("Please enter a search query with at least 3 characters", "warning");
     return;
   }
@@ -93,7 +96,7 @@ const handleSearcgFormSubmit = async (event) => {
     const images = await fetchImages(query);
     hideLoadingIndicator();
 
-    if (images.lenght > 0) {
+    if (images.length > 0) {
       renderGallery(images);
 
       document.getElementById("load-more").style.display = "block";
@@ -110,7 +113,7 @@ const loadMoreImages = async () => {
   const searchInput = document.getElementById("search-input");
   const query = searchInput.value.trim();
 
-  if (query.lenght < 3) {
+  if (query.length < 3) {
     showMessage("Please enter a search query with at least 3 characters", "warning");
     return;
   }
@@ -122,7 +125,7 @@ const loadMoreImages = async () => {
 
     hideLoadingIndicator();
 
-    if (images.lenght > 0) {
+    if (images.length > 0) {
       renderGallery(images);
       currentPage++;
 
