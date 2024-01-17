@@ -28,7 +28,7 @@ const fetchImages = async (query, page = 1) => {
     const url = getBaseUrl();
     url.searchParams.append("q", query);
     url.searchParams.append("page", page);
-    url.searchParams.append("per_rage", ITEMS_PER_PAGE);
+    url.searchParams.append("per_page", ITEMS_PER_PAGE);
 
     const response = await axios.get(url.toString());
     return response.data.hits;
@@ -69,10 +69,6 @@ const hideLoadingIndicator = () => {
 };
 
 const showMessage = (message, type = "info") => {
-  simpleLightbox.close();
-  simpleLightbox.reload();
-  simpleLightbox.refresh();
-  simpleLightbox.next();
 
   iziToast[type]({
     title: message,
