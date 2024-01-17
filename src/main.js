@@ -40,6 +40,7 @@ const fetchImages = async (query, page = 1) => {
 
 const renderGallery = (images) => {
   const galleryContainer = document.getElementById("gallery");
+  galleryContainer.innerHTML = "";
 
   images.forEach((image) => {
     const { webformatURL, largeImageURL, tags, likes, views, comments, downloads } = image;
@@ -58,6 +59,8 @@ const renderGallery = (images) => {
     </li>
     `);
   });
+
+  lightbox.refresh();
 };
 
 const showLoadingIndicator = () => {
@@ -69,14 +72,13 @@ const hideLoadingIndicator = () => {
 };
 
 const showMessage = (message, type = "info") => {
-
   iziToast[type]({
     title: message,
     position: "topCenter",
   });
 };
 
-const handleSearcgFormSubmit = async (event) => {
+const handleSearchFormSubmit = async (event) => {
   event.preventDefault();
   const searchInput = document.getElementById("search-input");
   const query = searchInput.value.trim();
@@ -95,7 +97,7 @@ const handleSearcgFormSubmit = async (event) => {
     if (images.length > 0) {
       renderGallery(images);
 
-      document.getElementById("load-more").style.display = "block";
+      document.getElementById("load-more").style.display = images.length >= ITEMS_PER_PAGE ? "block" : "none";
     } else {
       showMessage("Sorry, there are no images matching your search query. Please try again.", "error");
     }
@@ -145,7 +147,7 @@ const getCardHeight = () => {
 let currentPage = 1;
 
 const searchForm = document.getElementById("form");
-searchForm.addEventListener("submit", handleSearcgFormSubmit);
+searchForm.addEventListener("submit", handleSearchFormSubmit);
 
 const loadMoreButton = document.getElementById("load-more");
 loadMoreButton.addEventListener("click", loadMoreImages);
