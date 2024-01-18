@@ -39,7 +39,6 @@ const fetchImages = async (query, page = 1) => {
 
 const renderGallery = (images) => {
   const galleryContainer = document.getElementById("gallery");
-  galleryContainer.innerHTML = "";
 
   images.forEach((image) => {
     const { webformatURL, largeImageURL, tags, likes, views, comments, downloads } = image;
@@ -87,10 +86,11 @@ const handleSearchFormSubmit = async (event) => {
     return;
   }
 
-  showLoadingIndicator();
-
   try {
+    showLoadingIndicator();
+
     const images = await fetchImages(query);
+
     hideLoadingIndicator();
 
     if (images.length > 0) {
@@ -117,9 +117,9 @@ const loadMoreImages = async () => {
     return;
   }
 
-  showLoadingIndicator();
-
   try {
+    showLoadingIndicator();
+
     const images = await fetchImages(query, currentPage + 1);
 
     hideLoadingIndicator();
