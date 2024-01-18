@@ -106,6 +106,8 @@ const handleSearchFormSubmit = async (event) => {
   }
 };
 
+let currentPage = 1;
+
 const loadMoreImages = async () => {
   const searchInput = document.getElementById("search-input");
   const query = searchInput.value.trim();
@@ -118,7 +120,7 @@ const loadMoreImages = async () => {
   showLoadingIndicator();
 
   try {
-    const images = await fetchImages(query, currentPage);
+    const images = await fetchImages(query, currentPage + 1);
 
     hideLoadingIndicator();
 
@@ -128,7 +130,7 @@ const loadMoreImages = async () => {
 
       window.scrollBy(0, getCardHeight());
     } else {
-      showMessage("No more images t load", "info");
+      showMessage("No more images to load", "info");
 
       document.getElementById("load-more").style.display = "none";
     }
@@ -143,7 +145,6 @@ const getCardHeight = () => {
   return firstCard ? firstCard.getBoundingClientRect().height : 0;
 };
 
-let currentPage = 1;
 
 const searchForm = document.getElementById("form");
 searchForm.addEventListener("submit", handleSearchFormSubmit);
