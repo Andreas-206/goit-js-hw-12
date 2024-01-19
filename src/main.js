@@ -62,11 +62,11 @@ const renderGallery = (images) => {
 };
 
 const showLoadingIndicator = () => {
-  document.getElementById("loader").style.display = "block";
+  document.querySelector(".loader").style.display = "block";
 };
 
 const hideLoadingIndicator = () => {
-  document.getElementById("loader").style.display = "none";
+  document.querySelector(".loader").style.display = "none";
 };
 
 const showMessage = (message, type = "info") => {
